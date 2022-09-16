@@ -2,7 +2,8 @@ package com.app.exceptionHandler;
 
 import java.time.LocalDateTime;
 
-import com.app.dto.ErrorResponse;
+import com.app.customExceptionHandler.ResourceNotFoundException;
+import com.app.dto.ApiResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,20 +13,19 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import com.app.customExceptionHandler.CustomExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(CustomExceptionHandler.class)
-	public ResponseEntity<?> handleCustomException(CustomExceptionHandler e) {
-		ErrorResponse resp = new ErrorResponse(e.getMessage(), LocalDateTime.now());
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<?> handleCustomException(ResourceNotFoundException e) {
+		ApiResponse resp = new ApiResponse(LocalDateTime.now(), e.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
 	}
 
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<?> handleExistingUserExcetpion(DataIntegrityViolationException e) {
-		ErrorResponse resp = new ErrorResponse("User already exisited with this Email!", LocalDateTime.now());
+		ApiResponse resp = new ApiResponse(LocalDateTime.now(), "User already exisited with this Email!");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
 	}
 	
@@ -37,6 +37,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		StringBuilder sb = new StringBuilder("Validation Errors : ");
 		ex.getBindingResult().getFieldErrors().forEach(e -> sb.append(e.getDefaultMessage()+" "));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(new ErrorResponse(sb.toString(), LocalDateTime.now()));
+				.body(new ApiResponse(LocalDateTime.now(), sb.toString()));
 	}
 }

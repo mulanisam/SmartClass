@@ -1,44 +1,53 @@
 package com.app.pojos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotBlank;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Table(name = "period")
+@AllArgsConstructor
+@Table(name = "periods")
 public class Period extends BaseEntity{
-
-    @NotBlank(message = "Period Start Time is required!")
-    @Column(length = 50,nullable = false)
-    private LocalTime startTime;
-
-    @NotBlank(message = "Period End Time is required!")
-    @Column(length = 50,nullable = false)
-    private LocalTime endTime;
-
-    @NotBlank(message = "Period Date is required!")
-    @Column(length = 50,nullable = false)
-    private LocalDate date;
-
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("subject")
-    private Subject subject;
-
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("teacher")
-    private Teacher teacher;
-
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("classStandard")
-    private ClassStandard std;
+	
+	@OneToOne
+	@NotBlank(message = "std is required")
+	@JoinColumn(name = "std_id",nullable = false)
+	private Std std;
+	
+	@NotBlank(message = "Date is required")
+	private LocalDate date;
+	
+	@Column(name = "start_time")
+	@NotBlank(message = "Start time required")
+	private Time startTime;
+	
+	@Column(name = "end_time")
+	@NotBlank(message = "Start time required")
+	private Time endTime;
+	
+	@OneToOne
+	@NotBlank(message = "Subject is required")
+	@JoinColumn(name = "subject_id",nullable = false)
+	private Subject subjectId;
+	
+	@OneToOne
+	@NotBlank(message = "Teacher is required")
+	@JoinColumn(name = "teacher_id",nullable = false)
+	private Teacher teacherId;
+	
 }

@@ -1,15 +1,14 @@
 package com.app.pojos;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-
-import org.hibernate.annotations.ManyToAny;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,16 +20,21 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "subjects")
-public class Subject extends BaseEntity {
+@Table(name = "student_assignment")
+public class StudentAssignment extends BaseEntity {
 	
-	@Column(name = "sub_name", length = 20, nullable = false)
-	@NotBlank(message = "Subject Name is required")
-	private String subjectName;
+	@Column(name = "submit_file")
+	private byte[] submitFile;
 	
-	//bi dir relationship between Teacher 1<----* Subject
-	@ManyToOne
-	@JoinColumn(name = "teacher_id",nullable = false)
-	private Teacher teachers;
+	@Column(length = 50)
+	private String remarks;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "student_id")
+	private Student student;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "assignment_id")
+	private Assignment assignment;
+		
 }
