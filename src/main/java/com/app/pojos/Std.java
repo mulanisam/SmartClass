@@ -12,6 +12,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,14 +28,16 @@ import lombok.Setter;
 public class Std extends BaseEntity {
 	
 	@Column(unique = true)
-	@NotBlank(message = "Std is required")
+	//@NotBlank(message = "Std is required")
 	private String std;
 	
+	@JsonIgnoreProperties("classTeacher")
 	@OneToOne
 	@JoinColumn(name = "class_teacher_id",nullable = false)
 	private Teacher classTeacher;
 	
 	//bi dir relationship between Std 1<----* Student
+	@JsonIgnoreProperties("students")
 	@OneToMany(mappedBy = "standards",cascade = CascadeType.ALL)
 	private List<Student> students = new ArrayList<>();
 	

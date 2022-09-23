@@ -23,18 +23,21 @@ public class TeacherRegisterRequest {
 	@Size(min = 3, max = 10)
 	private String lastName;
 	
+	@NotBlank(message = "Gender is required")
+	private String gender;
+	
 	@Email
 	@NotBlank(message = "Email is required")
 	private String email;
 	
-	@Size(min = 5, max = 10)
+	@Size(min = 5, max = 20)
 	@NotBlank(message = "Password is required")
 	private String password;
 	
 	
 	private String role = "teacher";
 	
-	@NotBlank(message = "Subject Name is required")
-	private String subject;
+	//@NotBlank(message = "Subject Name is required")
+	private int subject;
 	
 }

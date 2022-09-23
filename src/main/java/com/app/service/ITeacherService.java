@@ -6,13 +6,14 @@ import java.util.List;
 import com.app.dto.ApiResponse;
 import com.app.dto.AssignmentRequestDto;
 import com.app.dto.TeacherRegisterRequest;
-import com.app.dto.UserLoginResponse;
+import com.app.dto.StudentLoginResponse;
+import com.app.dto.TeacherLoginResponse;
 
 
 public interface ITeacherService {
-	UserLoginResponse login(String email, String password, String role);
+	TeacherLoginResponse login(String email, String password, String role);
 	ApiResponse registerNewTeacher(TeacherRegisterRequest teacher);
-	List<String> getTimeTable(int teacherId, LocalDate date);
+	List<String> getTimeTable(int teacherId);
 	List<String> getWeeklyScheduleDetailsByTeacherId(int teacherId);
 	//Assignment setAssignment(String std, String subject,int assignmentNo);
 	

@@ -23,6 +23,9 @@ public class StudentRegisterRequest {
 	@Size(min = 3, max = 10)
 	private String lastName;
 	
+	@NotBlank(message = "Gender is required")
+	private String gender;
+	
 	@Email
 	@NotBlank(message = "Email is required")
 	private String email;
@@ -34,7 +37,7 @@ public class StudentRegisterRequest {
 	
 	private String role;
 	
-	@NotBlank(message = "Standard is required")
-	private String std;
+	//@NotBlank(message = "Standard is required")
+	private int std;
 	
 }

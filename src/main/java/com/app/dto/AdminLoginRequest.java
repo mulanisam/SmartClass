@@ -1,6 +1,5 @@
 package com.app.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,13 +8,11 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserLoginResponse {
-	private String firstName;
-	private String lastName;
+@NoArgsConstructor
+@ToString
+public class AdminLoginRequest {
 	private String email;
+	private String password;
 	private String role;
-	
 }

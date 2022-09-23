@@ -8,6 +8,7 @@ import lombok.ToString;
 @Setter
 
 public class SubAssignmentRequest {
-	private int StdId;
+	private int stdId;
 	private int subId;
+	private int studentId;
 }

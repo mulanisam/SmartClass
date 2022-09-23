@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,14 +29,22 @@ public class Assignment extends BaseEntity {
 	@Column(name = "assignment_no")
 	private int assignmentNo;
 	
+	@Column(name = "assignment_name")
+	private String assignmentName;
+
+	@Column(name = "file_type")
+	private  String getFileType;
+	
 	//@NotBlank(message = "date is required")
 	@Column(name = "publish_date")
 	private LocalDate publishDate;
 	
+	@JsonIgnoreProperties("subId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sub_id",nullable = false)
 	private Subject subId;
 	
+	@JsonIgnoreProperties("stdId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "std_id",nullable = false)
 	private Std stdId;

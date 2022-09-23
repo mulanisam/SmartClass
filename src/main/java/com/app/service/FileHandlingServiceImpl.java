@@ -1,5 +1,6 @@
 package com.app.service;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Comparator;
 import java.util.List;
@@ -13,6 +14,9 @@ import com.app.pojos.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import com.app.dao.IAssignmentRepository;
 import com.app.dao.IStudentAssignmentRepository;
@@ -42,12 +46,13 @@ public class FileHandlingServiceImpl implements IFileHandlingService {
 		subId.setId(assignment.getSubId());
 		Std stdId = new Std();
 		stdId.setId(assignment.getStdId());
-		int max =  assignmentRepo.findByStdIdAndSubId(assignment.getStdId(),assignment.getSubId());
+		int max =  assignmentRepo.findByStdIdAndSubId(assignment.getStdId(),assignment.getSubId()).orElse(0);
 		//OptionalInt max = asg.stream().mapToInt(Assignment::getAssignmentNo).max();
-		//System.out.println(max);
-		Assignment transientAssignment = new Assignment(max + 1, assignment.getPublishDate(),subId,stdId, assignment.getAssignmentFile());//mapper.map(assignment, Assignment.class);
+		System.out.println(max);
+		Assignment transientAssignment = new Assignment(max + 1,assignment.getAssignmentName(),assignment.getGetFileType() ,assignment.getPublishDate(),subId,stdId, assignment.getAssignmentFile());//mapper.map(assignment, Assignment.class);
 		//System.out.println(transientAssignment.getStdId());
 		Assignment persistentAssignment = assignmentRepo.save(transientAssignment);
+		//System.out.println(persistentAssignment.getAssignmentName());
 		List<Student> students = studentRepo.findStudentsByStdId(assignment.getStdId());
 		for (Student student : students) {
 			StudentAssignment transientStudAssign = new StudentAssignment(null, "Pending", student, persistentAssignment);
@@ -64,10 +69,31 @@ public class FileHandlingServiceImpl implements IFileHandlingService {
 	}
 
 	@Override
-	public byte[] studAssignment(int assignmentId) {
+	public AssignmentRequestDto studAssignment(int assignmentId) {
 		Assignment assign = assignmentRepo.findById(assignmentId)
 				.orElseThrow(() -> new ResourceNotFoundException("Invalid AssignmentId"));
-		return assign.getAssignmentFile();
+		return new AssignmentRequestDto(assign.getStdId().getId(),assign.getSubId().getId(),assign.getPublishDate(),assign.getAssignmentName(),assign.getGetFileType(),assign.getAssignmentFile());
+	}
+
+	@Override
+	public ApiResponse studSubmitAssignment(int studentId, int assignmentId, MultipartFile assignment) throws IOException {
+		//System.out.println(assignment.getOriginalFilename() + assignment.getSize());
+		StudentAssignment stud = studentAssignmentRepo.findByStudIdAndAssignmentId(studentId,assignmentId);
+		stud.setSubmitFile(assignment.getBytes());
+		//System.out.println(assignment.getOriginalFilename() +" "+ assignment.getSize());
+		stud.setRemarks("Submitted");
+		return new ApiResponse("Assignment for:"+stud.getAssignment().getSubId().getSubjectName()
+				+" with Assignment NO:"+ stud.getAssignment().getAssignmentNo()
+				+" with tracking Id:"+stud.getId()
+				+ " Submitted Successsfully");
+	}
+
+	@Override
+	public byte[] teacherDownload(int studentId, int assignmentId) {
+		StudentAssignment assign = studentAssignmentRepo.findByStudIdAndAssignmentId(studentId,assignmentId);
+				//.orElseThrow(() -> new ResourceNotFoundException("Invalid AssignmentId"));
+		assign.setRemarks("Under Cheking");
+		return assign.getSubmitFile();
 	}
 
 }

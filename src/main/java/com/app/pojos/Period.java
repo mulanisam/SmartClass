@@ -6,10 +6,12 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +26,7 @@ import lombok.Setter;
 @Table(name = "periods")
 public class Period extends BaseEntity{
 	
+	@JsonIgnoreProperties("std")
 	@OneToOne
 	@NotBlank(message = "std is required")
 	@JoinColumn(name = "std_id",nullable = false)
@@ -40,13 +43,15 @@ public class Period extends BaseEntity{
 	@NotBlank(message = "Start time required")
 	private Time endTime;
 	
+	@JsonIgnoreProperties("subjectId")
 	@OneToOne
 	@NotBlank(message = "Subject is required")
 	@JoinColumn(name = "subject_id",nullable = false)
 	private Subject subjectId;
 	
-	@OneToOne
-	@NotBlank(message = "Teacher is required")
+	@JsonIgnoreProperties("teacherId")
+	@ManyToOne
+	//@NotBlank(message = "Teacher is required")
 	@JoinColumn(name = "teacher_id",nullable = false)
 	private Teacher teacherId;
 	
